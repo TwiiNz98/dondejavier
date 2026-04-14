@@ -4,84 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Donde Javier | Delivery en Osorno</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Poppins', 'sans-serif'],
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['Syne', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            red: '#E53E3E',
-                            yellow: '#ECC94B',
-                            dark: '#1A202C'
+                            red: '#D63031',
+                            yellow: '#FDCB6E',
+                            dark: '#1A1A2E',
+                            cream: '#FFF9F0'
                         }
-                    },
-                    animation: {
-                        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
                     }
                 }
             }
         }
     </script>
     <style>
+        :root {
+            --red: #D63031;
+            --dark: #1A1A2E;
+            --cream: #FFF9F0;
+            --yellow: #FDCB6E;
+        }
+
+        /* ─── RESET & BASE ─── */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { background: var(--cream); color: var(--dark); font-family: 'DM Sans', sans-serif; }
+
+        /* ─── SCROLLBAR ─── */
         .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
-        .slide-up { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #e2d9d0; border-radius: 4px; }
+
+        /* ─── SLIDE/FADE ANIMATIONS ─── */
+        .slide-up { transform: translateY(100%); transition: transform 0.42s cubic-bezier(0.32, 0, 0.16, 1); }
         .slide-up.active { transform: translateY(0); }
-        
         .fade-in { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .fade-in.active { opacity: 1; pointer-events: auto; }
 
-        .toast { transform: translateY(20px); opacity: 0; transition: all 0.3s ease; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-
-        body { -webkit-tap-highlight-color: transparent; }
-        
-        .glass-btn {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+        /* ─── ENTRANCE ANIMATIONS ─── */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes heroReveal {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes badgePop {
+            0%   { transform: scale(0) rotate(-12deg); }
+            70%  { transform: scale(1.2) rotate(4deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        @keyframes shimmer {
+            0%   { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes pulseRing {
+            0%   { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-16px) scale(0.9); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes countUp {
+            from { transform: translateY(8px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes successPop {
+            0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+            60%  { transform: scale(1.15) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
         }
 
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .hero-section { animation: heroReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .menu-title   { animation: fadeSlideUp 0.5s 0.15s both; }
+
+        .card-item {
+            animation: fadeSlideUp 0.5s both;
+            opacity: 0;
+            transition: box-shadow 0.2s ease, transform 0.18s ease;
         }
-        .logo-icon-container {
-            background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.2);
-            color: white;
+        .card-item:active { transform: scale(0.97); }
+        .card-item:hover  { box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+
+        /* ─── RIPPLE ─── */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple-circle {
+            position: absolute; border-radius: 50%;
+            background: rgba(214, 48, 49, 0.15);
+            transform: scale(0); animation: rippleExpand 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleExpand {
+            to { transform: scale(3); opacity: 0; }
         }
 
+        /* ─── CART BADGE ─── */
+        .badge-pop { animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+        /* ─── TOAST ─── */
+        .toast-item { animation: toastIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .toast-out  { animation: fadeIn 0.25s reverse both; }
+
+        /* ─── INGREDIENTS CHIP ─── */
         .ing-chip {
-            transition: all 0.2s ease;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
         }
         .ing-chip.removed {
-            opacity: 0.5;
-            background: #fee2e2;
-            border-color: #fca5a5;
-            text-decoration: line-through;
+            background: #fff0f0;
+            border-color: #ffb3b3;
+            opacity: 0.7;
+        }
+        .ing-chip.removed .chip-label { text-decoration: line-through; color: #e17055; }
+
+        /* ─── PULSE LIVE ─── */
+        .live-dot::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            background: #00b894;
+            animation: pulseRing 1.8s ease-out infinite;
         }
 
+        /* ─── PRODUCT SLIDER ─── */
         #product-slider {
             scroll-snap-type: x mandatory;
             display: flex;
@@ -89,534 +160,762 @@
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
-        .product-slide {
-            scroll-snap-align: start;
-            flex: 0 0 100%;
-            width: 100%;
-        }
+        .product-slide { scroll-snap-align: start; flex: 0 0 100%; width: 100%; }
         #product-slider::-webkit-scrollbar { display: none; }
 
-        .nav-tap-area {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 55;
+        /* ─── NAV ARROWS ─── */
+        .nav-arrow {
+            position: absolute; top: 100px; z-index: 55;
+            background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; cursor: pointer;
             opacity: 0;
-            transition: opacity 0.4s ease, background 0.2s ease;
-            cursor: pointer;
+            transition: opacity 0.3s, transform 0.2s;
         }
-        .nav-tap-area.visible { opacity: 0.15; }
-        .nav-tap-area:active { opacity: 0.5; background: rgba(255,255,255,0.05); }
-        
-        .custom-icon {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
+        .nav-arrow.visible { opacity: 1; }
+        .nav-arrow:active  { transform: scale(0.9); }
+
+        /* ─── DOTS ─── */
+        .slider-dot {
+            width: 6px; height: 6px; border-radius: 3px;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+        }
+        .slider-dot.active { width: 20px; background: white; }
+
+        /* ─── FOOTER LINKS ─── */
+        .social-link {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .social-link:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .social-link:active { transform: scale(0.97); }
+
+        /* ─── QUANTITY ─── */
+        .qty-btn { transition: all 0.18s ease; }
+        .qty-btn:active { transform: scale(0.85); background: var(--red); color: white; }
+
+        /* ─── LOGO PULSE ─── */
+        .logo-icon {
+            background: linear-gradient(135deg, #D63031 0%, #C0392B 100%);
+            box-shadow: 0 4px 16px rgba(214,48,49,0.3);
+            transition: transform 0.3s ease;
+        }
+        .logo-icon:hover { transform: rotate(-8deg) scale(1.05); }
+
+        /* ─── GLASS HEADER ─── */
+        .header-glass {
+            background: rgba(255, 249, 240, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(214,48,49,0.08);
+        }
+
+        /* ─── FLOATING CTA ─── */
+        #floating-cart-btn {
+            transition: all 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 32px rgba(214,48,49,0.4);
+        }
+        #floating-cart-btn.visible { transform: translateY(0); opacity: 1; }
+
+        /* ─── CART ITEM ─── */
+        .cart-item-row {
+            animation: fadeSlideUp 0.3s both;
+        }
+
+        /* ─── CONFIRM OVERLAY ─── */
+        #confirm-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            background: rgba(26,26,46,0.7);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #confirm-overlay.active { opacity: 1; pointer-events: auto; }
+        #confirm-modal {
+            background: white; width: 100%; max-width: 448px;
+            border-radius: 2rem 2rem 0 0;
+            padding: 2rem;
+            transform: translateY(100%);
+            transition: transform 0.42s cubic-bezier(0.32,0,0.16,1);
+        }
+        #confirm-overlay.active #confirm-modal { transform: translateY(0); }
+
+        /* ─── SUCCESS ICON ─── */
+        .success-anim { animation: successPop 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .wiggle { animation: wiggle 0.4s ease; }
+
+        /* ─── HERO BG GRAIN ─── */
+        .hero-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            background-size: 200px;
+            mix-blend-mode: overlay;
+        }
+
+        /* ─── CATEGORY TAG ─── */
+        .category-pill {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            background: rgba(214,48,49,0.08);
+            color: var(--red);
+            border-radius: 99px;
+            padding: 4px 10px;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
+<body class="pb-28 antialiased">
 
-    <!-- Encabezado -->
-    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-100">
+    <!-- ─── HEADER ─── -->
+    <header class="header-glass sticky top-0 z-40">
         <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="brand-logo">
-                <div class="logo-icon-container">
-                    <i data-lucide="utensils-crossed" class="w-6 h-6"></i>
+            <div class="flex items-center gap-3">
+                <div class="logo-icon w-11 h-11 rounded-[14px] flex items-center justify-center text-white cursor-pointer">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+                    </svg>
                 </div>
-                <div class="flex flex-col">
-                    <span class="font-heading font-bold text-lg tracking-tight text-brand-dark leading-none">Donde Javier</span>
-                    <span class="text-[9px] font-bold text-brand-red uppercase tracking-[0.2em] mt-1">Osorno - Rahue Alto</span>
+                <div>
+                    <span class="font-heading text-[18px] font-bold tracking-tight text-gray-900 leading-none block">Donde Javier</span>
+                    <span class="text-[9px] font-bold text-red-500 uppercase tracking-[0.18em]">Osorno · Rahue Alto</span>
                 </div>
             </div>
-            <button onclick="toggleCart()" class="relative p-2.5 bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 transition-all border border-gray-100">
-                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                <span id="cart-badge" class="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-bold min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform shadow-md">0</span>
+            <button onclick="toggleCart()" class="relative p-2.5 rounded-xl bg-white border border-gray-100 shadow-sm text-gray-600 hover:border-red-100 transition-all">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full border-2 border-[#FFF9F0] shadow hidden">0</span>
             </button>
         </div>
     </header>
 
     <main class="max-w-md mx-auto">
-        <!-- Banner Hero -->
-        <section class="px-4 py-6">
-            <div class="bg-gradient-to-br from-brand-dark to-gray-800 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="inline-block px-3 py-1 bg-brand-red text-white text-[10px] font-bold rounded-full shadow-sm uppercase tracking-widest">
-                            Servicio Delivery
-                        </span>
-                    </div>
-                    <h2 class="font-heading font-bold text-2xl leading-tight mb-2">
-                        La calidad que<br>usted prefiere.
-                    </h2>
-                    <p class="text-sm text-gray-300 mb-4 max-w-[200px]">
-                        Especialidades preparadas al instante para disfrutar en casa.
-                    </p>
+
+        <!-- ─── HERO ─── -->
+        <section class="px-4 pt-5 pb-4 hero-section">
+            <div class="relative bg-gradient-to-br from-[#1A1A2E] via-[#2d1f1f] to-[#1A1A2E] rounded-[2rem] overflow-hidden text-white" style="min-height:170px;">
+                <div class="hero-noise absolute inset-0 pointer-events-none"></div>
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="absolute -right-8 -top-8 w-52 h-52 rounded-full" style="background: radial-gradient(circle, rgba(214,48,49,0.25) 0%, transparent 70%);"></div>
+                    <div class="absolute -left-4 -bottom-12 w-40 h-40 rounded-full" style="background: radial-gradient(circle, rgba(253,203,110,0.12) 0%, transparent 70%);"></div>
                 </div>
-                <i data-lucide="chef-hat" class="absolute -bottom-4 -right-4 w-32 h-32 text-white opacity-10 transform -rotate-12"></i>
+                <div class="relative z-10 p-6 pr-2">
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-3 py-1 rounded-full mb-3">
+                        <span class="relative flex h-2 w-2"><span class="live-dot relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span></span>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">Abierto ahora</span>
+                    </div>
+                    <h1 class="font-heading text-[26px] font-bold leading-[1.1] mb-2">La calidad<br>que prefiere.</h1>
+                    <p class="text-[12px] text-gray-300 leading-relaxed max-w-[180px]">Especialidades preparadas al instante, directo a su puerta.</p>
+                </div>
+                <!-- Decorative food icon -->
+                <div class="absolute right-4 bottom-0 opacity-[0.07]">
+                    <svg width="120" height="120" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-4.5-6.72-5-8.03-5-1.06 0-8 .23-8 5h16.03z"/>
+                    </svg>
+                </div>
             </div>
         </section>
 
-        <!-- Listado de Productos -->
+        <!-- ─── MENU ─── -->
         <section class="px-4 pb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-heading font-bold text-xl text-gray-800 tracking-tight">Nuestra Carta</h3>
-                <div class="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-1.5 rounded-full shadow-sm">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <span class="text-[11px] font-bold text-green-700 uppercase tracking-tight">Abierto Ahora</span>
-                </div>
+            <div class="flex items-center justify-between mb-4 menu-title">
+                <h2 class="font-heading text-[22px] font-bold text-gray-900">Nuestra Carta</h2>
+                <span class="category-pill">4 especialidades</span>
             </div>
-            
-            <div class="space-y-4" id="menu-container"></div>
+            <div class="space-y-3" id="menu-container"></div>
 
-            <!-- Redes Sociales y Contacto -->
-            <div class="mt-12 mb-8 text-center border-t border-gray-100 pt-10">
-                <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-6 italic">Encuéntranos en redes sociales</p>
-                <div class="flex flex-col gap-3 px-2">
-                    <a href="https://instagram.com/donde.javier" target="_blank" class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 group">
+            <!-- ─── SOCIAL ─── -->
+            <div class="mt-14 pt-8 border-t border-gray-100/80 text-center">
+                <p class="text-[9px] uppercase tracking-[0.25em] font-bold text-gray-300 mb-5">Encuéntrenos en redes</p>
+                <div class="space-y-2.5">
+                    <a href="https://instagram.com/donde.javier" target="_blank" class="social-link flex items-center justify-between bg-white border border-gray-100 shadow-sm p-4 rounded-2xl group">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-xl text-white shadow-sm">
-                                <i data-lucide="instagram" class="w-6 h-6"></i>
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] flex items-center justify-center text-white">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                             </div>
                             <div class="text-left">
-                                <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Instagram</p>
-                                <p class="text-sm font-bold text-gray-700 leading-none">@donde.javier</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Instagram</p>
+                                <p class="text-sm font-bold text-gray-800">@donde.javier</p>
                             </div>
                         </div>
-                        <i data-lucide="external-link" class="w-4 h-4 text-gray-300 group-hover:text-pink-500 transition-colors"></i>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-pink-500 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                     </a>
-                    
-                    <a href="https://wa.me/56944222079" target="_blank" class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                    <a href="https://wa.me/56944222079" target="_blank" class="social-link flex items-center justify-between bg-white border border-gray-100 shadow-sm p-4 rounded-2xl group">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex items-center justify-center bg-[#25D366] rounded-xl text-white shadow-sm">
-                                <i data-lucide="message-circle" class="w-6 h-6"></i>
+                            <div class="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center text-white">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
                             </div>
                             <div class="text-left">
-                                <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">WhatsApp</p>
-                                <p class="text-sm font-bold text-gray-700 leading-none">+56 9 4422 2079</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">WhatsApp</p>
+                                <p class="text-sm font-bold text-gray-800">+56 9 4422 2079</p>
                             </div>
                         </div>
-                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300 group-hover:text-green-500 transition-colors"></i>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-500 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                     </a>
                 </div>
-                <p class="mt-10 text-[10px] text-gray-300 font-medium">© 2026 Donde Javier - Osorno, Chile</p>
+                <p class="mt-8 text-[10px] text-gray-300">© 2026 Donde Javier · Osorno, Chile</p>
             </div>
         </section>
     </main>
 
-    <!-- Modal Detalle de Producto -->
-    <div id="product-overlay" class="fixed inset-0 bg-gray-900/60 z-50 fade-in backdrop-blur-sm" onclick="closeProductDetails()"></div>
-    <div id="product-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-50 slide-up max-w-md mx-auto flex flex-col h-[85vh] overflow-hidden">
+    <!-- ─── PRODUCT OVERLAY ─── -->
+    <div id="product-overlay" class="fixed inset-0 bg-gray-900/50 z-50 fade-in backdrop-blur-sm" onclick="closeProductDetails()"></div>
+    <div id="product-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-50 slide-up max-w-md mx-auto flex flex-col" style="height:88vh; overflow:hidden;">
         
-        <button onclick="closeProductDetails()" class="absolute top-4 right-4 glass-btn text-white p-2 rounded-full border border-white/20 transition-transform active:scale-90 z-[60]">
-            <i data-lucide="x" class="w-6 h-6"></i>
+        <button onclick="closeProductDetails()" class="absolute top-4 right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm border border-white/20 text-white">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
 
-        <div id="prev-btn" class="nav-tap-area left-0" onclick="navigateSlider(-1)">
-            <div class="p-2 rounded-full text-white/50">
-                <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </div>
-        </div>
-        <div id="next-btn" class="nav-tap-area right-0" onclick="navigateSlider(1)">
-            <div class="p-2 rounded-full text-white/50">
-                <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </div>
-        </div>
+        <!-- Dots indicator -->
+        <div id="slider-dots" class="absolute top-4 left-0 right-0 flex justify-center gap-1.5 z-[65] pointer-events-none"></div>
 
-        <div id="product-slider" class="flex-1 overflow-y-hidden"></div>
-        
-        <div class="px-6 py-4 bg-white border-t border-gray-100 shrink-0 z-[60]">
+        <!-- Nav arrows -->
+        <button id="prev-btn" class="nav-arrow left-3" onclick="navigateSlider(-1)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button id="next-btn" class="nav-arrow right-3" onclick="navigateSlider(1)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <div id="product-slider" class="flex-1" style="overflow:hidden auto;"></div>
+
+        <!-- Add to cart bar -->
+        <div class="px-5 py-4 bg-white border-t border-gray-100 shrink-0 z-[60]">
             <div class="flex items-center gap-3">
-                <div class="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200 shrink-0">
-                    <button onclick="updateDetailQty(-1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 active:scale-90 transition-all">
-                        <i data-lucide="minus" class="w-4 h-4"></i>
-                    </button>
-                    <span id="detail-qty" class="font-bold text-base w-8 text-center text-gray-800">1</span>
-                    <button onclick="updateDetailQty(1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 active:scale-90 transition-all">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                    </button>
+                <div class="flex items-center bg-gray-50 rounded-xl border border-gray-200 p-1 shrink-0">
+                    <button onclick="updateDetailQty(-1)" class="qty-btn w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 font-bold text-lg">−</button>
+                    <span id="detail-qty" class="font-bold text-base w-9 text-center text-gray-900">1</span>
+                    <button onclick="updateDetailQty(1)" class="qty-btn w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 font-bold text-lg">+</button>
                 </div>
-                
-                <button id="add-to-cart-btn" class="flex-1 bg-brand-red text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm">
-                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                    Añadir al pedido
+                <button id="add-to-cart-btn" class="flex-1 bg-red-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-[0.97] transition-transform text-sm shadow-lg shadow-red-200">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span id="add-btn-label">Añadir al pedido</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Carrito -->
-    <div id="cart-overlay" class="fixed inset-0 bg-gray-900/60 z-50 fade-in backdrop-blur-sm" onclick="toggleCart()"></div>
-    <div id="cart-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 slide-up max-w-md mx-auto flex flex-col max-h-[85vh]">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="font-heading font-bold text-lg text-gray-800 flex items-center gap-2">
-                <i data-lucide="receipt" class="w-5 h-5 text-brand-red"></i> Resumen del Pedido
+    <!-- ─── CART MODAL ─── -->
+    <div id="cart-overlay" class="fixed inset-0 bg-gray-900/50 z-50 fade-in backdrop-blur-sm" onclick="toggleCart()"></div>
+    <div id="cart-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 slide-up max-w-md mx-auto flex flex-col" style="max-height:88vh;">
+        <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
+            <h3 class="font-heading font-bold text-lg flex items-center gap-2 text-gray-900">
+                <svg width="20" height="20" fill="none" stroke="#D63031" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Resumen del Pedido
             </h3>
-            <button onclick="toggleCart()" class="p-2 bg-gray-100 rounded-full text-gray-500">
-                <i data-lucide="x" class="w-5 h-5"></i>
+            <button onclick="toggleCart()" class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full text-gray-500">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-        <div class="px-6 py-4 flex-1 overflow-y-auto custom-scroll" id="cart-items"></div>
-        <div class="px-6 py-5 bg-gray-50 border-t border-gray-200 rounded-t-3xl">
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-gray-600 mb-1 ml-1">Dirección de Entrega</label>
-                <div class="relative">
-                    <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                    <input type="text" id="address-input" placeholder="Ej: Calle Las Araucarias 123" class="w-full bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-red transition-all">
-                </div>
+        <div class="flex-1 overflow-y-auto custom-scroll px-5" id="cart-items"></div>
+        <div class="px-5 pt-4 pb-6 bg-gray-50 border-t border-gray-100 shrink-0">
+            <!-- Address -->
+            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 ml-1">Dirección de entrega</label>
+            <div class="relative mb-4">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input type="text" id="address-input" placeholder="Ej: Calle Las Araucarias 123" class="w-full bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all font-medium">
             </div>
-            <div class="flex justify-between items-end mb-4 px-1">
-                <span class="text-gray-500 text-sm font-medium">Total:</span>
-                <span id="cart-total" class="font-heading font-bold text-2xl text-brand-dark">$0</span>
+            <!-- Total row -->
+            <div class="flex justify-between items-center mb-4 px-1">
+                <span class="text-sm text-gray-500 font-medium">Total del pedido</span>
+                <span id="cart-total" class="font-heading font-bold text-2xl text-gray-900">$0</span>
             </div>
-            <button onclick="checkout()" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 shadow-lg">
-                <i data-lucide="send" class="w-5 h-5"></i>
-                Enviar Pedido vía WhatsApp
+            <!-- WhatsApp CTA -->
+            <button onclick="openConfirmStep()" class="w-full bg-[#25D366] hover:bg-[#20be5c] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2.5 active:scale-95 transition-all shadow-lg shadow-green-200 text-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                Enviar pedido por WhatsApp
             </button>
+            <p class="text-center text-[10px] text-gray-400 mt-2">Le redirigiremos a WhatsApp para confirmar</p>
         </div>
     </div>
 
-    <div id="toast-container" class="fixed top-5 left-0 right-0 z-[60] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
-
-    <div class="fixed bottom-6 left-0 right-0 px-4 z-30 pointer-events-none max-w-md mx-auto">
-        <button id="floating-cart-btn" onclick="toggleCart()" class="w-full bg-brand-red text-white py-4 rounded-2xl shadow-xl flex items-center justify-between px-6 pointer-events-auto transform transition-all active:scale-95 hidden">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/20 p-1.5 rounded-lg"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
-                <span class="font-semibold text-sm">Ver mi pedido</span>
+    <!-- ─── CONFIRM MODAL ─── -->
+    <div id="confirm-overlay">
+        <div id="confirm-modal">
+            <div class="text-center mb-5">
+                <div class="success-anim w-14 h-14 bg-green-50 border-2 border-green-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg width="28" height="28" fill="none" stroke="#25D366" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <h3 class="font-heading text-xl font-bold text-gray-900 mb-1">¡Pedido listo!</h3>
+                <p class="text-sm text-gray-500">Revise el resumen antes de enviar</p>
             </div>
-            <span id="floating-total" class="font-bold text-lg">$0</span>
+            <div id="confirm-summary" class="bg-gray-50 rounded-2xl p-4 mb-4 text-sm space-y-2 max-h-48 overflow-y-auto custom-scroll"></div>
+            <div class="flex items-center justify-between py-3 border-t border-gray-100 mb-4">
+                <span class="font-medium text-gray-600">Total</span>
+                <span id="confirm-total" class="font-heading font-bold text-xl text-red-600"></span>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmStep()" class="flex-1 py-3.5 bg-gray-100 text-gray-700 font-bold rounded-xl text-sm active:scale-95 transition-transform">Editar</button>
+                <button onclick="checkout()" class="flex-1 py-3.5 bg-[#25D366] text-white font-bold rounded-xl flex items-center justify-center gap-2 text-sm active:scale-95 transition-transform shadow-lg shadow-green-200">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    Confirmar y enviar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TOAST ─── -->
+    <div id="toast-container" class="fixed top-5 left-0 right-0 z-[90] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
+
+    <!-- ─── FLOATING CTA ─── -->
+    <div class="fixed bottom-5 left-0 right-0 px-4 z-30 pointer-events-none max-w-md mx-auto">
+        <button id="floating-cart-btn" onclick="toggleCart()" class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-5 pointer-events-auto active:scale-95 hidden" style="transform:translateY(80px); opacity:0;">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/15 p-2 rounded-xl">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] opacity-70 leading-none mb-0.5">Ver pedido</p>
+                    <p class="font-bold text-sm leading-none"><span id="float-count">0</span> producto(s)</p>
+                </div>
+            </div>
+            <span id="floating-total" class="font-heading font-bold text-xl">$0</span>
         </button>
     </div>
 
     <script>
-        // Iconos SVG Personalizados
-        const tomatoIconSvg = `
-            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M10 3L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M14 3L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
-                <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
-            </svg>
-        `;
+    // ─── PRODUCTS DATA ───
+    const products = [
+        {
+            id: 1,
+            name: 'Completo Clásico',
+            persuasive: 'El equilibrio perfecto entre el frescor del tomate y el carácter intenso del chucrut, sobre un pan artesanal esponjoso.',
+            tag: 'El favorito',
+            ingredients: [
+                { name: 'Pan artesanal', icon: 'bread' },
+                { name: 'Vienesa premium', icon: 'sausage' },
+                { name: 'Tomate picado', icon: 'tomato' },
+                { name: 'Chucrut', icon: 'leaf' },
+                { name: 'Mayonesa casera', icon: 'mayo' },
+            ],
+            price: 1000,
+            image: 'https://images.unsplash.com/photo-1612392166886-ee8475b03af2?auto=format&fit=crop&w=800&q=80'
+        },
+        {
+            id: 2,
+            name: 'Completo Italiano',
+            persuasive: 'Cremosa palta natural procesada a diario sobre jugosa vienesa. El preferido de los paladares exigentes.',
+            tag: 'Más pedido',
+            ingredients: [
+                { name: 'Pan artesanal', icon: 'bread' },
+                { name: 'Vienesa premium', icon: 'sausage' },
+                { name: 'Tomate fresco', icon: 'tomato' },
+                { name: 'Palta natural', icon: 'avocado' },
+                { name: 'Mayonesa casera', icon: 'mayo' },
+            ],
+            price: 1600,
+            image: 'https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?auto=format&fit=crop&w=800&q=80'
+        },
+        {
+            id: 3,
+            name: 'Italiano + Bebida',
+            persuasive: 'La combinación perfecta. Un Italiano XXL acompañado de bebida individual helada. Ahorro garantizado.',
+            tag: 'Mejor valor',
+            ingredients: [
+                { name: 'Pan artesanal', icon: 'bread' },
+                { name: 'Vienesa premium', icon: 'sausage' },
+                { name: 'Tomate fresco', icon: 'tomato' },
+                { name: 'Palta natural', icon: 'avocado' },
+                { name: 'Mayonesa casera', icon: 'mayo' },
+                { name: 'Bebida 350ml', icon: 'soda' },
+            ],
+            price: 2000,
+            image: 'https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=800&q=80'
+        },
+        {
+            id: 4,
+            name: 'Papas Fritas',
+            persuasive: 'Papas seleccionadas y fritas en su punto exacto. Crujientes por fuera, tiernas por dentro. Sal de mar.',
+            tag: 'Ideal para compartir',
+            ingredients: [
+                { name: 'Papa seleccionada', icon: 'fries' },
+                { name: 'Sal de mar', icon: 'salt' },
+                { name: 'Aceite vegetal', icon: 'oil' },
+            ],
+            price: 1500,
+            image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80'
+        }
+    ];
 
-        const sausageIconSvg = `
-            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 10C3 8.34315 4.34315 7 6 7H18C19.6569 7 21 8.34315 21 10V14C21 15.6569 19.6569 17 18 17H6C4.34315 17 3 15.6569 3 14V10Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
-                <path d="M1.5 11V13C1.5 13.55 1.95 14 2.5 14V10C1.95 10 1.5 10.45 1.5 11Z" fill="currentColor"/>
-                <path d="M22.5 11V13C22.5 13.55 22.05 14 21.5 14V10C22.05 10 22.5 10.45 22.5 11Z" fill="currentColor"/>
-                <path d="M7 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-                <path d="M12 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-                <path d="M17 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-            </svg>
-        `;
+    // ─── CUSTOM SVG ICONS ───
+    const icons = {
+        bread: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M3 11a7 7 0 1 1 14 0v1H3v-1z"/><rect x="2" y="12" width="16" height="5" rx="1"/><path d="M6 17v2M14 17v2"/></svg>`,
+        sausage: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><ellipse cx="12" cy="12" rx="9" ry="4.5"/><path d="M3 12c0 2.5 4 4.5 9 4.5s9-2 9-4.5"/><path d="M7 10.5c0-.8.7-1.5 1.5-1.5" stroke-width="1.2" opacity=".5"/><path d="M11 9.5c0-.8.7-1.5 1.5-1.5" stroke-width="1.2" opacity=".5"/><path d="M15 10.5c0-.8.7-1.5 1.5-1.5" stroke-width="1.2" opacity=".5"/></svg>`,
+        tomato: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="12" cy="15" r="7"/><path d="M12 8V5"/><path d="M9.5 6.5 Q12 8 14.5 6.5"/><path d="M8 5.5 Q10 7 12 6"/><path d="M16 5.5 Q14 7 12 6"/><path d="M12 8 Q14.5 11.5 12 15 Q9.5 11.5 12 8" fill="currentColor" fill-opacity=".15" stroke="none"/></svg>`,
+        avocado: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M12 2C9 2 6 5.5 6 10.5c0 4.5 2.5 8 6 9 3.5-1 6-4.5 6-9C18 5.5 15 2 12 2z"/><ellipse cx="12" cy="14" rx="3.5" ry="4.5" fill="currentColor" fill-opacity=".15"/><circle cx="12" cy="14" r="1.8" fill="currentColor" fill-opacity=".5" stroke="none"/></svg>`,
+        leaf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
+        mayo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M9 3h6l1 5H8L9 3z"/><path d="M8 8v13h8V8"/><path d="M11 11v4M13 11v4" stroke-width="1.2" opacity=".5"/></svg>`,
+        soda: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/><path d="M9 12c.5-1 1.5-1 2 0s1.5 1 2 0" stroke-width="1.2"/></svg>`,
+        fries: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M7 11V4M10 11V2M13 11V4M16 11V2" stroke-width="2"/><path d="M5 11h14l-2 10H7L5 11z"/></svg>`,
+        salt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="7" y="7" width="10" height="14" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/><circle cx="12" cy="13" r="1.5" fill="currentColor" fill-opacity=".4" stroke="none"/></svg>`,
+        oil: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M8 3v4l-2 2v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9l-2-2V3"/><path d="M8 3h8"/><path d="M12 7v8" stroke-width="1.2" opacity=".5"/></svg>`,
+    };
 
-        const avocadoIconSvg = `
-            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C8 2 5 7 5 12C5 17.5 8 22 12 22C16 22 19 17.5 19 12C19 7 16 2 12 2Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="15" r="3.5" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="15" r="1.5" fill="currentColor" opacity="0.5"/>
-            </svg>
-        `;
+    // ─── STATE ───
+    let cart = [];
+    let currentDetailQty = 1;
+    let activeProductIndex = 0;
+    let removedMap = {};
+    const WA = "56944222079";
 
-        const friesIconSvg = `
-            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 10V21C5 21.5523 5.44772 22 6 22H18C18.5523 22 19 21.5523 19 21V10H5Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
-                <path d="M7 2V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M10 1V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M13 2V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16 4V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M5 10H19" stroke="currentColor" stroke-width="2"/>
-            </svg>
-        `;
-
-        const ingredientIcons = {
-            'Pan artesanal': 'sandwich',
-            'Vienesa de primera calidad': 'sausage-custom',
-            'Tomate picado': 'tomato-custom',
-            'Tomate fresco': 'tomato-custom',
-            'Chucrut': 'leafy-green',
-            'Mayonesa casera': 'egg',
-            'Palta natural': 'avocado-custom',
-            'Bebida individual (350ml)': 'cup-soda',
-            'Papas de origen nacional': 'fries-custom',
-            'Sal de mar': 'waves',
-            'Aceite vegetal purificado': 'droplets'
-        };
-
-        const products = [
-            {
-                id: 1,
-                name: 'Completo Clásico',
-                persuasive: 'Nuestra versión del clásico chileno con el equilibrio exacto entre el frescor del tomate y el carácter del chucrut.',
-                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate picado', 'Chucrut', 'Mayonesa casera'],
-                price: 1000,
-                image: 'https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=600&q=80'
-            },
-            {
-                id: 2,
-                name: 'Completo Italiano',
-                persuasive: 'Cremosa palta natural procesada diariamente para garantizar una textura inigualable.',
-                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate fresco', 'Palta natural', 'Mayonesa casera'],
-                price: 1600,
-                image: 'https://img.freepik.com/foto-gratis/perro-caliente-italiano-clasico-primer-plano_23-2148210357.jpg?auto=format&w=600&q=80'
-            },
-            {
-                id: 3,
-                name: 'Promoción Italiano + Bebida',
-                persuasive: 'La combinación ideal. Un Italiano XL acompañado de una bebida individual helada.',
-                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate fresco', 'Palta natural', 'Mayonesa casera', 'Bebida individual (350ml)'],
-                price: 2000,
-                image: 'https://images.unsplash.com/photo-1623231307228-440268800995?auto=format&fit=crop&w=600&q=80'
-            },
-            {
-                id: 4,
-                name: 'Papas Fritas',
-                persuasive: 'Papas seleccionadas y fritas en su punto óptimo. Crujientes por fuera, tiernas por dentro.',
-                ingredients: ['Papas de origen nacional', 'Sal de mar', 'Aceite vegetal purificado'],
-                price: 1500,
-                image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80'
-            }
-        ];
-
-        let cart = [];
-        let currentDetailQty = 1;
-        let activeProductIndex = 0;
-        let removedIngredientsMap = {};
-        const phone = "56944222079";
-
-        function renderMenu() {
-            const container = document.getElementById('menu-container');
-            container.innerHTML = products.map((product, index) => `
-                <div onclick="openProductDetails(${index})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex transform transition-all active:scale-[0.97] cursor-pointer hover:shadow-md">
-                    <div class="w-1/3 h-28 relative shrink-0">
-                        <img src="${product.image}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover">
+    // ─── RENDER MENU ───
+    function renderMenu() {
+        const c = document.getElementById('menu-container');
+        c.innerHTML = products.map((p, i) => `
+            <div onclick="openProduct(${i})" class="card-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex ripple-container" style="animation-delay:${i * 80}ms">
+                <div class="w-[38%] h-28 relative shrink-0">
+                    <img src="${p.image}" alt="${p.name}" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10"></div>
+                    ${p.tag ? `<span class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-[9px] font-bold text-red-600 uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">${p.tag}</span>` : ''}
+                </div>
+                <div class="flex-1 p-3.5 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-sm leading-tight mb-1">${p.name}</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed line-clamp-2">${p.persuasive}</p>
                     </div>
-                    <div class="w-2/3 p-4 flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-gray-800 leading-tight mb-1 text-sm">${product.name}</h4>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Especialidad de la casa</p>
-                        </div>
-                        <div class="mt-2 flex items-center justify-between">
-                            <span class="font-heading font-bold text-lg text-brand-dark">$${product.price.toLocaleString('es-CL')}</span>
-                            <div class="bg-brand-red/10 text-brand-red p-2 rounded-lg"><i data-lucide="plus" class="w-4 h-4"></i></div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="font-heading font-bold text-lg text-gray-900">$${p.price.toLocaleString('es-CL')}</span>
+                        <div class="w-8 h-8 bg-red-50 text-red-600 rounded-lg flex items-center justify-center">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         </div>
                     </div>
                 </div>
-            `).join('');
-            lucide.createIcons();
-        }
+            </div>
+        `).join('');
+        // ripple
+        document.querySelectorAll('.ripple-container').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const r = document.createElement('span');
+                r.className = 'ripple-circle';
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                r.style.cssText = `width:${size}px;height:${size}px;top:${e.clientY-rect.top-size/2}px;left:${e.clientX-rect.left-size/2}px`;
+                this.appendChild(r);
+                setTimeout(() => r.remove(), 600);
+            });
+        });
+    }
 
-        function openProductDetails(index) {
-            activeProductIndex = index;
-            currentDetailQty = 1;
-            document.getElementById('detail-qty').textContent = currentDetailQty;
-            renderSlider();
-            document.getElementById('product-overlay').classList.add('active');
-            document.getElementById('product-modal').classList.add('active');
-            const slider = document.getElementById('product-slider');
-            slider.scrollLeft = document.getElementById(`slide-${index}`).offsetLeft;
-            updateNavigationIndicators();
-            lucide.createIcons();
-        }
+    // ─── RENDER SLIDER DOTS ───
+    function renderDots() {
+        const container = document.getElementById('slider-dots');
+        container.innerHTML = products.map((_, i) => `<div class="slider-dot ${i === activeProductIndex ? 'active' : ''}"></div>`).join('');
+    }
 
-        function renderSlider() {
+    // ─── OPEN PRODUCT ───
+    function openProduct(index) {
+        activeProductIndex = index;
+        currentDetailQty = 1;
+        document.getElementById('detail-qty').textContent = 1;
+        renderSlider();
+        renderDots();
+        document.getElementById('product-overlay').classList.add('active');
+        document.getElementById('product-modal').classList.add('active');
+        requestAnimationFrame(() => {
             const slider = document.getElementById('product-slider');
-            slider.innerHTML = products.map((product, idx) => {
-                const removed = removedIngredientsMap[product.id] || [];
-                return `
-                <div id="slide-${idx}" class="product-slide flex flex-col h-full overflow-y-auto custom-scroll">
-                    <div class="relative h-64 w-full shrink-0">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+            const slide  = document.getElementById(`slide-${index}`);
+            if (slide) slider.scrollLeft = slide.offsetLeft;
+        });
+        updateNavArrows();
+        updateAddBtn();
+    }
+
+    function closeProductDetails() {
+        document.getElementById('product-overlay').classList.remove('active');
+        document.getElementById('product-modal').classList.remove('active');
+    }
+
+    // ─── RENDER SLIDER ───
+    function renderSlider() {
+        const slider = document.getElementById('product-slider');
+        slider.innerHTML = products.map((p, idx) => {
+            const removed = removedMap[p.id] || [];
+            return `
+            <div id="slide-${idx}" class="product-slide flex flex-col overflow-y-auto custom-scroll" style="height:100%;">
+                <div class="relative shrink-0" style="height:210px;">
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.3) 40%, transparent 100%);"></div>
+                    ${p.tag ? `<div class="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.12em] px-3 py-1 rounded-full">${p.tag}</div>` : ''}
+                </div>
+                <div class="px-5 py-3 pb-10">
+                    <div class="flex justify-between items-start gap-3 mb-2">
+                        <h2 class="font-heading font-bold text-[22px] text-gray-900 leading-tight">${p.name}</h2>
+                        <span class="font-heading font-bold text-2xl text-red-600 shrink-0 mt-0.5">$${p.price.toLocaleString('es-CL')}</span>
                     </div>
-                    <div class="px-6 py-4 pb-12">
-                        <div class="flex justify-between items-start mb-4">
-                            <h2 class="font-heading font-bold text-2xl text-gray-800 pr-4">${product.name}</h2>
-                            <span class="font-heading font-bold text-2xl text-brand-red shrink-0">$${product.price.toLocaleString('es-CL')}</span>
+                    <p class="text-[13px] text-gray-500 leading-relaxed mb-5">${p.persuasive}</p>
+                    
+                    <div class="mb-2">
+                        <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400 mb-3 flex items-center gap-2">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            Personalizar ingredientes
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            ${p.ingredients.map(ing => {
+                                const isRemoved = removed.includes(ing.name);
+                                return `<button onclick="toggleIngredient(${p.id}, '${ing.name}')" class="ing-chip flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold ${isRemoved ? 'removed border-red-200 bg-red-50 text-red-500' : 'border-gray-200 bg-white text-gray-700 shadow-sm'}">
+                                    <span class="${isRemoved ? 'text-red-400' : 'text-red-500'}">${icons[ing.icon] || ''}</span>
+                                    <span class="chip-label">${ing.name}</span>
+                                    ${isRemoved ? `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>` : ''}
+                                </button>`;
+                            }).join('')}
                         </div>
-                        <p class="text-gray-500 leading-relaxed text-sm italic mb-8">${product.persuasive}</p>
-                        <div class="mb-6">
-                            <div class="flex items-center gap-2 mb-4">
-                                <i data-lucide="list-checks" class="w-4 h-4 text-gray-400"></i>
-                                <h4 class="text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400">Personalizar ingredientes</h4>
+                        ${removed.length > 0 ? `<p class="mt-2 text-[11px] text-red-400 font-medium">Se omitirá: ${removed.join(', ')}</p>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function toggleIngredient(productId, name) {
+        if (!removedMap[productId]) removedMap[productId] = [];
+        const list = removedMap[productId];
+        removedMap[productId] = list.includes(name) ? list.filter(i => i !== name) : [...list, name];
+        const scrollLeft = document.getElementById('product-slider').scrollLeft;
+        renderSlider();
+        requestAnimationFrame(() => { document.getElementById('product-slider').scrollLeft = scrollLeft; });
+    }
+
+    function updateNavArrows() {
+        document.getElementById('prev-btn').classList.toggle('visible', activeProductIndex > 0);
+        document.getElementById('next-btn').classList.toggle('visible', activeProductIndex < products.length - 1);
+    }
+
+    function navigateSlider(dir) {
+        const next = activeProductIndex + dir;
+        if (next >= 0 && next < products.length) {
+            document.getElementById('product-slider').scrollTo({ left: document.getElementById(`slide-${next}`).offsetLeft, behavior: 'smooth' });
+        }
+    }
+
+    document.getElementById('product-slider').addEventListener('scroll', e => {
+        const idx = Math.round(e.target.scrollLeft / e.target.offsetWidth);
+        if (idx !== activeProductIndex) {
+            activeProductIndex = idx;
+            updateNavArrows();
+            renderDots();
+            updateAddBtn();
+        }
+    });
+
+    function updateAddBtn() {
+        const p = products[activeProductIndex];
+        const label = document.getElementById('add-btn-label');
+        const inCart = cart.filter(i => i.id === p.id).reduce((s, i) => s + i.quantity, 0);
+        label.textContent = inCart > 0 ? `Añadir más (${inCart} en pedido)` : 'Añadir al pedido';
+    }
+
+    function updateDetailQty(delta) {
+        currentDetailQty = Math.max(1, currentDetailQty + delta);
+        document.getElementById('detail-qty').textContent = currentDetailQty;
+    }
+
+    document.getElementById('add-to-cart-btn').onclick = () => {
+        const p = products[activeProductIndex];
+        const removed = [...(removedMap[p.id] || [])];
+        cart.push({ ...p, quantity: currentDetailQty, uniqueId: Date.now(), removed });
+        updateCartUI();
+        closeProductDetails();
+        showToast(`✓ ${currentDetailQty}× ${p.name} añadido`);
+        const btn = document.getElementById('add-to-cart-btn');
+        btn.classList.add('wiggle');
+        setTimeout(() => btn.classList.remove('wiggle'), 400);
+    };
+
+    // ─── CART ───
+    function toggleCart() {
+        document.getElementById('cart-overlay').classList.toggle('active');
+        document.getElementById('cart-modal').classList.toggle('active');
+    }
+
+    function updateQuantity(uid, delta) {
+        const idx = cart.findIndex(i => i.uniqueId === uid);
+        if (idx > -1) {
+            cart[idx].quantity += delta;
+            if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+            updateCartUI();
+        }
+    }
+
+    function removeItem(uid) {
+        cart = cart.filter(i => i.uniqueId !== uid);
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const itemsEl   = document.getElementById('cart-items');
+        const totalEl   = document.getElementById('cart-total');
+        const floatTot  = document.getElementById('floating-total');
+        const floatCnt  = document.getElementById('float-count');
+        const badge     = document.getElementById('cart-badge');
+        const floatBtn  = document.getElementById('floating-cart-btn');
+
+        let total = 0, count = 0;
+
+        if (cart.length === 0) {
+            itemsEl.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-14 text-center">
+                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-3 text-gray-300">
+                        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-gray-400">Su carrito está vacío</p>
+                    <p class="text-xs text-gray-300 mt-1">Agregue productos para comenzar</p>
+                </div>`;
+            badge.classList.add('hidden');
+            floatBtn.classList.add('hidden');
+            floatBtn.style.transform = 'translateY(80px)';
+            floatBtn.style.opacity = '0';
+        } else {
+            itemsEl.innerHTML = cart.map((item, i) => {
+                total += item.price * item.quantity;
+                count += item.quantity;
+                const mods = item.removed.length > 0
+                    ? `<p class="text-[10px] text-red-400 font-medium mt-0.5">Sin: ${item.removed.join(', ')}</p>` : '';
+                return `
+                <div class="cart-item-row py-3.5 border-b border-gray-50 flex gap-3" style="animation-delay:${i*40}ms">
+                    <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-gray-100">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start gap-2">
+                            <div>
+                                <h5 class="text-sm font-bold text-gray-900 leading-tight">${item.name}</h5>
+                                ${mods}
                             </div>
-                            <div class="flex flex-wrap gap-2">
-                                ${product.ingredients.map(ing => {
-                                    const iconType = ingredientIcons[ing] || 'check-circle';
-                                    const isRemoved = removed.includes(ing);
-                                    let iconHtml = '';
-                                    if (iconType === 'tomato-custom') iconHtml = tomatoIconSvg;
-                                    else if (iconType === 'sausage-custom') iconHtml = sausageIconSvg;
-                                    else if (iconType === 'avocado-custom') iconHtml = avocadoIconSvg;
-                                    else if (iconType === 'fries-custom') iconHtml = friesIconSvg;
-                                    else iconHtml = `<i data-lucide="${isRemoved ? 'x-circle' : iconType}" class="w-3.5 h-3.5 ${isRemoved ? 'text-brand-red' : 'opacity-60'}"></i>`;
-                                    return `
-                                    <button onclick="toggleIngredient(${product.id}, '${ing}')" class="ing-chip px-3 py-1.5 bg-white rounded-lg text-[11px] font-bold border ${isRemoved ? 'removed' : 'border-gray-100 shadow-sm'} flex items-center gap-2 text-gray-700">
-                                        <div class="${isRemoved ? 'text-brand-red' : 'text-brand-red/80'} flex items-center justify-center">
-                                            ${iconHtml}
-                                        </div>
-                                        ${ing}
-                                    </button>`;
-                                }).join('')}
+                            <button onclick="removeItem(${item.uniqueId})" class="text-gray-300 hover:text-red-400 transition-colors shrink-0 mt-0.5">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="font-heading font-bold text-red-600 text-sm">$${(item.price * item.quantity).toLocaleString('es-CL')}</span>
+                            <div class="flex items-center bg-gray-100 rounded-lg border border-gray-200 p-0.5 gap-1">
+                                <button onclick="updateQuantity(${item.uniqueId}, -1)" class="qty-btn w-7 h-7 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 text-sm font-bold">−</button>
+                                <span class="text-xs font-bold w-5 text-center text-gray-800">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.uniqueId}, 1)" class="qty-btn w-7 h-7 flex items-center justify-center bg-white rounded-md shadow-sm text-gray-600 text-sm font-bold">+</button>
                             </div>
                         </div>
                     </div>
                 </div>`;
             }).join('');
-            lucide.createIcons();
+
+            badge.textContent = count;
+            badge.classList.remove('hidden');
+            badge.classList.add('badge-pop');
+            setTimeout(() => badge.classList.remove('badge-pop'), 400);
+
+            floatBtn.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                floatBtn.style.transition = 'all 0.42s cubic-bezier(0.34,1.56,0.64,1)';
+                floatBtn.style.transform = 'translateY(0)';
+                floatBtn.style.opacity = '1';
+            });
         }
 
-        function toggleIngredient(productId, ing) {
-            if (!removedIngredientsMap[productId]) removedIngredientsMap[productId] = [];
-            const list = removedIngredientsMap[productId];
-            if (list.includes(ing)) removedIngredientsMap[productId] = list.filter(i => i !== ing);
-            else removedIngredientsMap[productId].push(ing);
-            renderSlider();
-            document.getElementById('product-slider').scrollLeft = document.getElementById(`slide-${activeProductIndex}`).offsetLeft;
-        }
+        const fmt = `$${total.toLocaleString('es-CL')}`;
+        totalEl.textContent = fmt;
+        floatTot.textContent = fmt;
+        floatCnt.textContent = count;
+    }
 
-        function updateNavigationIndicators() {
-            const prev = document.getElementById('prev-btn');
-            const next = document.getElementById('next-btn');
-            activeProductIndex > 0 ? prev.classList.add('visible') : prev.classList.remove('visible');
-            activeProductIndex < products.length - 1 ? next.classList.add('visible') : next.classList.remove('visible');
-        }
+    // ─── CONFIRM STEP ───
+    function openConfirmStep() {
+        const address = document.getElementById('address-input').value.trim();
+        if (!address) { showToast('⚠️ Ingrese su dirección de entrega', 'error'); return; }
+        if (cart.length === 0) { showToast('⚠️ Su carrito está vacío', 'error'); return; }
 
-        function navigateSlider(direction) {
-            const nextIndex = activeProductIndex + direction;
-            if (nextIndex >= 0 && nextIndex < products.length) {
-                document.getElementById('product-slider').scrollLeft = document.getElementById(`slide-${nextIndex}`).offsetLeft;
+        let total = 0;
+        const summary = document.getElementById('confirm-summary');
+        summary.innerHTML = cart.map(item => {
+            total += item.price * item.quantity;
+            const mods = item.removed.length > 0 ? `<span class="block text-[10px] text-red-400 mt-0.5">Sin: ${item.removed.join(', ')}</span>` : '';
+            return `<div class="flex justify-between items-start gap-3">
+                <div><span class="font-medium text-gray-800">${item.quantity}× ${item.name}</span>${mods}</div>
+                <span class="font-bold text-gray-900 shrink-0">$${(item.price*item.quantity).toLocaleString('es-CL')}</span>
+            </div>`;
+        }).join('');
+
+        // address line
+        summary.innerHTML += `<div class="pt-2 mt-2 border-t border-gray-200 text-[11px] text-gray-500 flex gap-1.5 items-center">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${address}
+        </div>`;
+
+        document.getElementById('confirm-total').textContent = `$${total.toLocaleString('es-CL')}`;
+        document.getElementById('confirm-overlay').classList.add('active');
+        toggleCart();
+    }
+
+    function closeConfirmStep() {
+        document.getElementById('confirm-overlay').classList.remove('active');
+        // Re-open cart
+        setTimeout(() => {
+            document.getElementById('cart-overlay').classList.add('active');
+            document.getElementById('cart-modal').classList.add('active');
+        }, 200);
+    }
+
+    // ─── CHECKOUT → WHATSAPP ───
+    function checkout() {
+        const address = document.getElementById('address-input').value.trim();
+        const now     = new Date();
+        const orderId = `DJ-${now.getHours()}${String(now.getMinutes()).padStart(2,'0')}-${Math.floor(Math.random()*900+100)}`;
+        const fecha   = now.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
+        const hora    = now.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' });
+
+        let total = 0;
+        let itemLines = '';
+
+        cart.forEach((item, i) => {
+            const sub = item.price * item.quantity;
+            total += sub;
+            itemLines += `${i + 1}. *${item.name}* × ${item.quantity}\n`;
+            itemLines += `   Precio unitario: $${item.price.toLocaleString('es-CL')}\n`;
+            if (item.removed.length > 0) {
+                itemLines += `   ⚠️ _Sin: ${item.removed.join(', ')}_\n`;
             }
-        }
-
-        document.getElementById('product-slider').addEventListener('scroll', (e) => {
-            const slider = e.target;
-            const index = Math.round(slider.scrollLeft / slider.offsetWidth);
-            if (index !== activeProductIndex) {
-                activeProductIndex = index;
-                updateNavigationIndicators();
-            }
+            itemLines += `   Subtotal: *$${sub.toLocaleString('es-CL')}*\n\n`;
         });
 
-        function closeProductDetails() {
-            document.getElementById('product-overlay').classList.remove('active');
-            document.getElementById('product-modal').classList.remove('active');
-        }
+        const msg = [
+            `🌭 *DONDE JAVIER | DELIVERY OSORNO*`,
+            `━━━━━━━━━━━━━━━━━━━━━━━━`,
+            `📋 *Pedido:* ${orderId}`,
+            `📅 ${fecha} · ${hora}`,
+            `━━━━━━━━━━━━━━━━━━━━━━━━`,
+            ``,
+            `🛒 *DETALLE DEL PEDIDO:*`,
+            ``,
+            itemLines.trim(),
+            ``,
+            `━━━━━━━━━━━━━━━━━━━━━━━━`,
+            `💰 *TOTAL A PAGAR: $${total.toLocaleString('es-CL')}*`,
+            `📍 *Dirección:* ${address}`,
+            `⏱ *Tiempo estimado:* 25-40 min`,
+            `━━━━━━━━━━━━━━━━━━━━━━━━`,
+            ``,
+            `_Gracias por preferir Donde Javier._ 🙏`,
+            `_Le confirmaremos su pedido a la brevedad._`
+        ].join('\n');
 
-        function updateDetailQty(change) {
-            currentDetailQty = Math.max(1, currentDetailQty + change);
-            document.getElementById('detail-qty').textContent = currentDetailQty;
-        }
+        window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, '_blank');
+        document.getElementById('confirm-overlay').classList.remove('active');
+    }
 
-        document.getElementById('add-to-cart-btn').onclick = () => {
-            const activeProduct = products[activeProductIndex];
-            const removed = removedIngredientsMap[activeProduct.id] || [];
-            cart.push({ ...activeProduct, quantity: currentDetailQty, uniqueId: Date.now(), removed: [...removed] });
-            updateCartUI();
-            closeProductDetails();
-            showToast(`"${activeProduct.name}" añadido al pedido.`);
-        };
+    // ─── TOAST ───
+    function showToast(msg, type = 'success') {
+        const c    = document.getElementById('toast-container');
+        const el   = document.createElement('div');
+        const bg   = type === 'error' ? 'bg-red-600' : 'bg-gray-900';
+        el.className = `toast-item ${bg} text-white text-xs font-semibold px-5 py-3 rounded-2xl shadow-xl pointer-events-auto`;
+        el.textContent = msg;
+        c.appendChild(el);
+        setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 300); }, 3000);
+    }
 
-        function updateQuantity(uniqueId, change) {
-            const idx = cart.findIndex(item => item.uniqueId === uniqueId);
-            if (idx > -1) {
-                cart[idx].quantity += change;
-                if (cart[idx].quantity <= 0) cart.splice(idx, 1);
-                updateCartUI();
-            }
-        }
-
-        function updateCartUI() {
-            const items = document.getElementById('cart-items');
-            const totalEl = document.getElementById('cart-total');
-            const floatTotal = document.getElementById('floating-total');
-            const badge = document.getElementById('cart-badge');
-            const floatBtn = document.getElementById('floating-cart-btn');
-            let total = 0, count = 0;
-            if (cart.length === 0) {
-                items.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm italic">Su carrito se encuentra vacío.</div>`;
-                badge.classList.replace('scale-100', 'scale-0');
-                floatBtn.classList.add('hidden');
-            } else {
-                items.innerHTML = cart.map(item => {
-                    total += item.price * item.quantity;
-                    count += item.quantity;
-                    const mods = item.removed.length > 0 ? `<span class="text-red-500 text-[10px] font-medium leading-tight mt-1 opacity-70">Sin: ${item.removed.join(', ')}</span>` : '';
-                    return `
-                        <div class="flex flex-col py-4 border-b border-gray-50">
-                            <div class="flex items-center justify-between mb-2">
-                                <div><h5 class="text-sm font-bold text-gray-800">${item.name}</h5>${mods}</div>
-                                <div class="flex items-center gap-2 bg-gray-100 rounded-xl p-1 border border-gray-200">
-                                    <button onclick="updateQuantity(${item.uniqueId}, -1)" class="w-8 h-8 bg-white rounded-lg shadow-sm text-gray-600">-</button>
-                                    <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
-                                    <button onclick="updateQuantity(${item.uniqueId}, 1)" class="w-8 h-8 bg-white rounded-lg shadow-sm text-gray-600">+</button>
-                                </div>
-                            </div>
-                            <span class="text-xs text-brand-red font-bold">$${(item.price * item.quantity).toLocaleString('es-CL')}</span>
-                        </div>`;
-                }).join('');
-                badge.textContent = count;
-                badge.classList.replace('scale-0', 'scale-100');
-                floatBtn.classList.remove('hidden');
-            }
-            const fmt = `$${total.toLocaleString('es-CL')}`;
-            totalEl.textContent = fmt;
-            floatTotal.textContent = fmt;
-            lucide.createIcons();
-        }
-
-        function toggleCart() {
-            document.getElementById('cart-overlay').classList.toggle('active');
-            document.getElementById('cart-modal').classList.toggle('active');
-        }
-
-        function checkout() {
-            const address = document.getElementById('address-input').value.trim();
-            if (!address) { showToast("Por favor, ingrese una dirección de entrega.", "error"); return; }
-            
-            // Construcción del mensaje para WhatsApp con emojis estándar
-            let text = "🌭 *NUEVO PEDIDO - DONDE JAVIER* 🌭\n\n";
-            let total = 0;
-            
-            cart.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                text += `✅ *${item.quantity}x ${item.name}*\n`;
-                if (item.removed.length > 0) {
-                    text += `   🚫 SIN: ${item.removed.join(', ')}\n`;
-                }
-                text += `   Subtotal: $${subtotal.toLocaleString('es-CL')}\n\n`;
-                total += subtotal;
-            });
-            
-            text += `💰 *TOTAL A PAGAR:* $${total.toLocaleString('es-CL')}\n`;
-            text += `📍 *DIRECCIÓN:* ${address}\n\n`;
-            text += "_Quedo a la espera de su confirmación._";
-            
-            // Reemplazo manual de caracteres problemáticos antes de codificar la URI
-            const encodedText = encodeURIComponent(text);
-            window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
-        }
-
-        function showToast(msg, type = "success") {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `${type === "success" ? "bg-brand-dark" : "bg-red-500"} text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-medium toast pointer-events-auto`;
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
-        }
-
-        renderMenu();
+    // ─── INIT ───
+    renderMenu();
+    updateCartUI();
     </script>
 </body>
 </html>
