@@ -72,7 +72,6 @@
             color: white;
         }
 
-        /* Estilos para ingredientes seleccionables */
         .ing-chip {
             transition: all 0.2s ease;
         }
@@ -83,7 +82,6 @@
             text-decoration: line-through;
         }
 
-        /* Snap scroll para navegación de productos en detalle */
         #product-slider {
             scroll-snap-type: x mandatory;
             display: flex;
@@ -98,7 +96,6 @@
         }
         #product-slider::-webkit-scrollbar { display: none; }
 
-        /* Botones de navegación ultra sutiles */
         .nav-tap-area {
             position: absolute;
             top: 0;
@@ -115,7 +112,6 @@
         .nav-tap-area.visible { opacity: 0.15; }
         .nav-tap-area:active { opacity: 0.5; background: rgba(255,255,255,0.05); }
         
-        /* Iconos personalizados */
         .custom-icon {
             width: 16px;
             height: 16px;
@@ -219,12 +215,10 @@
     <div id="product-overlay" class="fixed inset-0 bg-gray-900/60 z-50 fade-in backdrop-blur-sm" onclick="closeProductDetails()"></div>
     <div id="product-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-50 slide-up max-w-md mx-auto flex flex-col h-[85vh] overflow-hidden">
         
-        <!-- Botón cerrar -->
         <button onclick="closeProductDetails()" class="absolute top-4 right-4 glass-btn text-white p-2 rounded-full border border-white/20 transition-transform active:scale-90 z-[60]">
             <i data-lucide="x" class="w-6 h-6"></i>
         </button>
 
-        <!-- Áreas táctiles de navegación lateral -->
         <div id="prev-btn" class="nav-tap-area left-0" onclick="navigateSlider(-1)">
             <div class="p-2 rounded-full text-white/50">
                 <i data-lucide="chevron-left" class="w-5 h-5"></i>
@@ -236,12 +230,8 @@
             </div>
         </div>
 
-        <!-- Slider de Productos -->
-        <div id="product-slider" class="flex-1 overflow-y-hidden">
-            <!-- Los slides se generarán dinámicamente -->
-        </div>
+        <div id="product-slider" class="flex-1 overflow-y-hidden"></div>
         
-        <!-- Footer de Acción -->
         <div class="px-6 py-4 bg-white border-t border-gray-100 shrink-0 z-[60]">
             <div class="flex items-center gap-3">
                 <div class="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200 shrink-0">
@@ -293,10 +283,8 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast-container" class="fixed top-5 left-0 right-0 z-[60] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
-    <!-- Botón Flotante -->
     <div class="fixed bottom-6 left-0 right-0 px-4 z-30 pointer-events-none max-w-md mx-auto">
         <button id="floating-cart-btn" onclick="toggleCart()" class="w-full bg-brand-red text-white py-4 rounded-2xl shadow-xl flex items-center justify-between px-6 pointer-events-auto transform transition-all active:scale-95 hidden">
             <div class="flex items-center gap-3">
@@ -308,7 +296,7 @@
     </div>
 
     <script>
-        // Iconos SVG Personalizados Mejorados
+        // Iconos SVG Personalizados
         const tomatoIconSvg = `
             <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
@@ -431,16 +419,11 @@
             activeProductIndex = index;
             currentDetailQty = 1;
             document.getElementById('detail-qty').textContent = currentDetailQty;
-            
             renderSlider();
-            
             document.getElementById('product-overlay').classList.add('active');
             document.getElementById('product-modal').classList.add('active');
-
             const slider = document.getElementById('product-slider');
-            const targetSlide = document.getElementById(`slide-${index}`);
-            slider.scrollLeft = targetSlide.offsetLeft;
-            
+            slider.scrollLeft = document.getElementById(`slide-${index}`).offsetLeft;
             updateNavigationIndicators();
             lucide.createIcons();
         }
@@ -455,15 +438,12 @@
                         <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
                     </div>
-
                     <div class="px-6 py-4 pb-12">
                         <div class="flex justify-between items-start mb-4">
                             <h2 class="font-heading font-bold text-2xl text-gray-800 pr-4">${product.name}</h2>
                             <span class="font-heading font-bold text-2xl text-brand-red shrink-0">$${product.price.toLocaleString('es-CL')}</span>
                         </div>
-
                         <p class="text-gray-500 leading-relaxed text-sm italic mb-8">${product.persuasive}</p>
-
                         <div class="mb-6">
                             <div class="flex items-center gap-2 mb-4">
                                 <i data-lucide="list-checks" class="w-4 h-4 text-gray-400"></i>
@@ -473,74 +453,48 @@
                                 ${product.ingredients.map(ing => {
                                     const iconType = ingredientIcons[ing] || 'check-circle';
                                     const isRemoved = removed.includes(ing);
-                                    
                                     let iconHtml = '';
-                                    if (iconType === 'tomato-custom') {
-                                        iconHtml = tomatoIconSvg;
-                                    } else if (iconType === 'sausage-custom') {
-                                        iconHtml = sausageIconSvg;
-                                    } else if (iconType === 'avocado-custom') {
-                                        iconHtml = avocadoIconSvg;
-                                    } else if (iconType === 'fries-custom') {
-                                        iconHtml = friesIconSvg;
-                                    } else {
-                                        iconHtml = `<i data-lucide="${isRemoved ? 'x-circle' : iconType}" class="w-3.5 h-3.5 ${isRemoved ? 'text-brand-red' : 'opacity-60'}"></i>`;
-                                    }
-
+                                    if (iconType === 'tomato-custom') iconHtml = tomatoIconSvg;
+                                    else if (iconType === 'sausage-custom') iconHtml = sausageIconSvg;
+                                    else if (iconType === 'avocado-custom') iconHtml = avocadoIconSvg;
+                                    else if (iconType === 'fries-custom') iconHtml = friesIconSvg;
+                                    else iconHtml = `<i data-lucide="${isRemoved ? 'x-circle' : iconType}" class="w-3.5 h-3.5 ${isRemoved ? 'text-brand-red' : 'opacity-60'}"></i>`;
                                     return `
                                     <button onclick="toggleIngredient(${product.id}, '${ing}')" class="ing-chip px-3 py-1.5 bg-white rounded-lg text-[11px] font-bold border ${isRemoved ? 'removed' : 'border-gray-100 shadow-sm'} flex items-center gap-2 text-gray-700">
                                         <div class="${isRemoved ? 'text-brand-red' : 'text-brand-red/80'} flex items-center justify-center">
                                             ${iconHtml}
                                         </div>
                                         ${ing}
-                                    </button>
-                                    `;
+                                    </button>`;
                                 }).join('')}
                             </div>
                         </div>
                     </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
             lucide.createIcons();
         }
 
         function toggleIngredient(productId, ing) {
             if (!removedIngredientsMap[productId]) removedIngredientsMap[productId] = [];
-            
             const list = removedIngredientsMap[productId];
-            if (list.includes(ing)) {
-                removedIngredientsMap[productId] = list.filter(i => i !== ing);
-            } else {
-                removedIngredientsMap[productId].push(ing);
-            }
+            if (list.includes(ing)) removedIngredientsMap[productId] = list.filter(i => i !== ing);
+            else removedIngredientsMap[productId].push(ing);
             renderSlider();
-            const slider = document.getElementById('product-slider');
-            slider.scrollLeft = document.getElementById(`slide-${activeProductIndex}`).offsetLeft;
+            document.getElementById('product-slider').scrollLeft = document.getElementById(`slide-${activeProductIndex}`).offsetLeft;
         }
 
         function updateNavigationIndicators() {
             const prev = document.getElementById('prev-btn');
             const next = document.getElementById('next-btn');
-            
-            if (activeProductIndex > 0) {
-                prev.classList.add('visible');
-            } else {
-                prev.classList.remove('visible');
-            }
-            
-            if (activeProductIndex < products.length - 1) {
-                next.classList.add('visible');
-            } else {
-                next.classList.remove('visible');
-            }
+            activeProductIndex > 0 ? prev.classList.add('visible') : prev.classList.remove('visible');
+            activeProductIndex < products.length - 1 ? next.classList.add('visible') : next.classList.remove('visible');
         }
 
         function navigateSlider(direction) {
             const nextIndex = activeProductIndex + direction;
             if (nextIndex >= 0 && nextIndex < products.length) {
-                const slider = document.getElementById('product-slider');
-                slider.scrollLeft = document.getElementById(`slide-${nextIndex}`).offsetLeft;
+                document.getElementById('product-slider').scrollLeft = document.getElementById(`slide-${nextIndex}`).offsetLeft;
             }
         }
 
@@ -566,15 +520,7 @@
         document.getElementById('add-to-cart-btn').onclick = () => {
             const activeProduct = products[activeProductIndex];
             const removed = removedIngredientsMap[activeProduct.id] || [];
-            
-            const item = {
-                ...activeProduct,
-                quantity: currentDetailQty,
-                uniqueId: Date.now(),
-                removed: [...removed]
-            };
-            
-            cart.push(item);
+            cart.push({ ...activeProduct, quantity: currentDetailQty, uniqueId: Date.now(), removed: [...removed] });
             updateCartUI();
             closeProductDetails();
             showToast(`"${activeProduct.name}" añadido al pedido.`);
@@ -595,7 +541,6 @@
             const floatTotal = document.getElementById('floating-total');
             const badge = document.getElementById('cart-badge');
             const floatBtn = document.getElementById('floating-cart-btn');
-
             let total = 0, count = 0;
             if (cart.length === 0) {
                 items.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm italic">Su carrito se encuentra vacío.</div>`;
@@ -605,16 +550,11 @@
                 items.innerHTML = cart.map(item => {
                     total += item.price * item.quantity;
                     count += item.quantity;
-                    
                     const mods = item.removed.length > 0 ? `<span class="text-red-500 text-[10px] font-medium leading-tight mt-1 opacity-70">Sin: ${item.removed.join(', ')}</span>` : '';
-
                     return `
                         <div class="flex flex-col py-4 border-b border-gray-50">
                             <div class="flex items-center justify-between mb-2">
-                                <div>
-                                    <h5 class="text-sm font-bold text-gray-800">${item.name}</h5>
-                                    ${mods}
-                                </div>
+                                <div><h5 class="text-sm font-bold text-gray-800">${item.name}</h5>${mods}</div>
                                 <div class="flex items-center gap-2 bg-gray-100 rounded-xl p-1 border border-gray-200">
                                     <button onclick="updateQuantity(${item.uniqueId}, -1)" class="w-8 h-8 bg-white rounded-lg shadow-sm text-gray-600">-</button>
                                     <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
@@ -643,18 +583,27 @@
             const address = document.getElementById('address-input').value.trim();
             if (!address) { showToast("Por favor, ingrese una dirección de entrega.", "error"); return; }
             
-            let text = `🌭 *NUEVO PEDIDO - DONDE JAVIER* 🌭\n\n`;
+            // Construcción del mensaje para WhatsApp con emojis estándar
+            let text = "🌭 *NUEVO PEDIDO - DONDE JAVIER* 🌭\n\n";
             let total = 0;
             
             cart.forEach(item => {
-                text += `▪ *${item.quantity}x ${item.name}*\n`;
-                if (item.removed.length > 0) text += `   ❌ SIN: ${item.removed.join(', ')}\n`;
-                text += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CL')}\n\n`;
-                total += item.price * item.quantity;
+                const subtotal = item.price * item.quantity;
+                text += `✅ *${item.quantity}x ${item.name}*\n`;
+                if (item.removed.length > 0) {
+                    text += `   🚫 SIN: ${item.removed.join(', ')}\n`;
+                }
+                text += `   Subtotal: $${subtotal.toLocaleString('es-CL')}\n\n`;
+                total += subtotal;
             });
             
-            text += `💰 *Total del Pedido:* $${total.toLocaleString('es-CL')}\n📍 *Dirección:* ${address}\n\n_Por favor confirmar pedido._`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+            text += `💰 *TOTAL A PAGAR:* $${total.toLocaleString('es-CL')}\n`;
+            text += `📍 *DIRECCIÓN:* ${address}\n\n`;
+            text += "_Quedo a la espera de su confirmación._";
+            
+            // Reemplazo manual de caracteres problemáticos antes de codificar la URI
+            const encodedText = encodeURIComponent(text);
+            window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
         }
 
         function showToast(msg, type = "success") {
