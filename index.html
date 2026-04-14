@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Donde Javier | Delivery en Osorno</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#E53E3E',
+                            yellow: '#ECC94B',
+                            dark: '#1A202C'
+                        }
+                    },
+                    animation: {
+                        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .slide-up { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-up.active { transform: translateY(0); }
+        
+        .fade-in { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .fade-in.active { opacity: 1; pointer-events: auto; }
+
+        .toast { transform: translateY(20px); opacity: 0; transition: all 0.3s ease; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        body { -webkit-tap-highlight-color: transparent; }
+        
+        .glass-btn {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon-container {
+            background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.2);
+            color: white;
+        }
+
+        /* Estilos para ingredientes seleccionables */
+        .ing-chip {
+            transition: all 0.2s ease;
+        }
+        .ing-chip.removed {
+            opacity: 0.5;
+            background: #fee2e2;
+            border-color: #fca5a5;
+            text-decoration: line-through;
+        }
+
+        /* Snap scroll para navegación de productos en detalle */
+        #product-slider {
+            scroll-snap-type: x mandatory;
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .product-slide {
+            scroll-snap-align: start;
+            flex: 0 0 100%;
+            width: 100%;
+        }
+        #product-slider::-webkit-scrollbar { display: none; }
+
+        /* Botones de navegación ultra sutiles */
+        .nav-tap-area {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 55;
+            opacity: 0;
+            transition: opacity 0.4s ease, background 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-tap-area.visible { opacity: 0.15; }
+        .nav-tap-area:active { opacity: 0.5; background: rgba(255,255,255,0.05); }
+        
+        /* Iconos personalizados */
+        .custom-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
+
+    <!-- Encabezado -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-100">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="brand-logo">
+                <div class="logo-icon-container">
+                    <i data-lucide="utensils-crossed" class="w-6 h-6"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-bold text-lg tracking-tight text-brand-dark leading-none">Donde Javier</span>
+                    <span class="text-[9px] font-bold text-brand-red uppercase tracking-[0.2em] mt-1">Osorno - Rahue Alto</span>
+                </div>
+            </div>
+            <button onclick="toggleCart()" class="relative p-2.5 bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 transition-all border border-gray-100">
+                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-bold min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform shadow-md">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto">
+        <!-- Banner Hero -->
+        <section class="px-4 py-6">
+            <div class="bg-gradient-to-br from-brand-dark to-gray-800 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-block px-3 py-1 bg-brand-red text-white text-[10px] font-bold rounded-full shadow-sm uppercase tracking-widest">
+                            Servicio Delivery
+                        </span>
+                    </div>
+                    <h2 class="font-heading font-bold text-2xl leading-tight mb-2">
+                        La calidad que<br>usted prefiere.
+                    </h2>
+                    <p class="text-sm text-gray-300 mb-4 max-w-[200px]">
+                        Especialidades preparadas al instante para disfrutar en casa.
+                    </p>
+                </div>
+                <i data-lucide="chef-hat" class="absolute -bottom-4 -right-4 w-32 h-32 text-white opacity-10 transform -rotate-12"></i>
+            </div>
+        </section>
+
+        <!-- Listado de Productos -->
+        <section class="px-4 pb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-heading font-bold text-xl text-gray-800 tracking-tight">Nuestra Carta</h3>
+                <div class="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-1.5 rounded-full shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span class="text-[11px] font-bold text-green-700 uppercase tracking-tight">Abierto Ahora</span>
+                </div>
+            </div>
+            
+            <div class="space-y-4" id="menu-container"></div>
+
+            <!-- Redes Sociales y Contacto -->
+            <div class="mt-12 mb-8 text-center border-t border-gray-100 pt-10">
+                <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-6 italic">Encuéntranos en redes sociales</p>
+                <div class="flex flex-col gap-3 px-2">
+                    <a href="https://instagram.com/donde.javier" target="_blank" class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-xl text-white shadow-sm">
+                                <i data-lucide="instagram" class="w-6 h-6"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Instagram</p>
+                                <p class="text-sm font-bold text-gray-700 leading-none">@donde.javier</p>
+                            </div>
+                        </div>
+                        <i data-lucide="external-link" class="w-4 h-4 text-gray-300 group-hover:text-pink-500 transition-colors"></i>
+                    </a>
+                    
+                    <a href="https://wa.me/56944222079" target="_blank" class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-[#25D366] rounded-xl text-white shadow-sm">
+                                <i data-lucide="message-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">WhatsApp</p>
+                                <p class="text-sm font-bold text-gray-700 leading-none">+56 9 4422 2079</p>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300 group-hover:text-green-500 transition-colors"></i>
+                    </a>
+                </div>
+                <p class="mt-10 text-[10px] text-gray-300 font-medium">© 2026 Donde Javier - Osorno, Chile</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Detalle de Producto -->
+    <div id="product-overlay" class="fixed inset-0 bg-gray-900/60 z-50 fade-in backdrop-blur-sm" onclick="closeProductDetails()"></div>
+    <div id="product-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-50 slide-up max-w-md mx-auto flex flex-col h-[85vh] overflow-hidden">
+        
+        <!-- Botón cerrar -->
+        <button onclick="closeProductDetails()" class="absolute top-4 right-4 glass-btn text-white p-2 rounded-full border border-white/20 transition-transform active:scale-90 z-[60]">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Áreas táctiles de navegación lateral -->
+        <div id="prev-btn" class="nav-tap-area left-0" onclick="navigateSlider(-1)">
+            <div class="p-2 rounded-full text-white/50">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div id="next-btn" class="nav-tap-area right-0" onclick="navigateSlider(1)">
+            <div class="p-2 rounded-full text-white/50">
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <!-- Slider de Productos -->
+        <div id="product-slider" class="flex-1 overflow-y-hidden">
+            <!-- Los slides se generarán dinámicamente -->
+        </div>
+        
+        <!-- Footer de Acción -->
+        <div class="px-6 py-4 bg-white border-t border-gray-100 shrink-0 z-[60]">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200 shrink-0">
+                    <button onclick="updateDetailQty(-1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 active:scale-90 transition-all">
+                        <i data-lucide="minus" class="w-4 h-4"></i>
+                    </button>
+                    <span id="detail-qty" class="font-bold text-base w-8 text-center text-gray-800">1</span>
+                    <button onclick="updateDetailQty(1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 active:scale-90 transition-all">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                
+                <button id="add-to-cart-btn" class="flex-1 bg-brand-red text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98] text-sm">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    Añadir al pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carrito -->
+    <div id="cart-overlay" class="fixed inset-0 bg-gray-900/60 z-50 fade-in backdrop-blur-sm" onclick="toggleCart()"></div>
+    <div id="cart-modal" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 slide-up max-w-md mx-auto flex flex-col max-h-[85vh]">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="font-heading font-bold text-lg text-gray-800 flex items-center gap-2">
+                <i data-lucide="receipt" class="w-5 h-5 text-brand-red"></i> Resumen del Pedido
+            </h3>
+            <button onclick="toggleCart()" class="p-2 bg-gray-100 rounded-full text-gray-500">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="px-6 py-4 flex-1 overflow-y-auto custom-scroll" id="cart-items"></div>
+        <div class="px-6 py-5 bg-gray-50 border-t border-gray-200 rounded-t-3xl">
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-gray-600 mb-1 ml-1">Dirección de Entrega</label>
+                <div class="relative">
+                    <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                    <input type="text" id="address-input" placeholder="Ej: Calle Las Araucarias 123" class="w-full bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-red transition-all">
+                </div>
+            </div>
+            <div class="flex justify-between items-end mb-4 px-1">
+                <span class="text-gray-500 text-sm font-medium">Total:</span>
+                <span id="cart-total" class="font-heading font-bold text-2xl text-brand-dark">$0</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 shadow-lg">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                Enviar Pedido vía WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast-container" class="fixed top-5 left-0 right-0 z-[60] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
+
+    <!-- Botón Flotante -->
+    <div class="fixed bottom-6 left-0 right-0 px-4 z-30 pointer-events-none max-w-md mx-auto">
+        <button id="floating-cart-btn" onclick="toggleCart()" class="w-full bg-brand-red text-white py-4 rounded-2xl shadow-xl flex items-center justify-between px-6 pointer-events-auto transform transition-all active:scale-95 hidden">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-1.5 rounded-lg"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
+                <span class="font-semibold text-sm">Ver mi pedido</span>
+            </div>
+            <span id="floating-total" class="font-bold text-lg">$0</span>
+        </button>
+    </div>
+
+    <script>
+        // Iconos SVG Personalizados Mejorados
+        const tomatoIconSvg = `
+            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 3L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M14 3L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
+            </svg>
+        `;
+
+        const sausageIconSvg = `
+            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 10C3 8.34315 4.34315 7 6 7H18C19.6569 7 21 8.34315 21 10V14C21 15.6569 19.6569 17 18 17H6C4.34315 17 3 15.6569 3 14V10Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+                <path d="M1.5 11V13C1.5 13.55 1.95 14 2.5 14V10C1.95 10 1.5 10.45 1.5 11Z" fill="currentColor"/>
+                <path d="M22.5 11V13C22.5 13.55 22.05 14 21.5 14V10C22.05 10 22.5 10.45 22.5 11Z" fill="currentColor"/>
+                <path d="M7 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                <path d="M12 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                <path d="M17 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+            </svg>
+        `;
+
+        const avocadoIconSvg = `
+            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8 2 5 7 5 12C5 17.5 8 22 12 22C16 22 19 17.5 19 12C19 7 16 2 12 2Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="15" r="3.5" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="15" r="1.5" fill="currentColor" opacity="0.5"/>
+            </svg>
+        `;
+
+        const friesIconSvg = `
+            <svg class="custom-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 10V21C5 21.5523 5.44772 22 6 22H18C18.5523 22 19 21.5523 19 21V10H5Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+                <path d="M7 2V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 1V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M13 2V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16 4V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M5 10H19" stroke="currentColor" stroke-width="2"/>
+            </svg>
+        `;
+
+        const ingredientIcons = {
+            'Pan artesanal': 'sandwich',
+            'Vienesa de primera calidad': 'sausage-custom',
+            'Tomate picado': 'tomato-custom',
+            'Tomate fresco': 'tomato-custom',
+            'Chucrut': 'leafy-green',
+            'Mayonesa casera': 'egg',
+            'Palta natural': 'avocado-custom',
+            'Bebida individual (350ml)': 'cup-soda',
+            'Papas de origen nacional': 'fries-custom',
+            'Sal de mar': 'waves',
+            'Aceite vegetal purificado': 'droplets'
+        };
+
+        const products = [
+            {
+                id: 1,
+                name: 'Completo Clásico',
+                persuasive: 'Nuestra versión del clásico chileno con el equilibrio exacto entre el frescor del tomate y el carácter del chucrut.',
+                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate picado', 'Chucrut', 'Mayonesa casera'],
+                price: 1000,
+                image: 'https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 2,
+                name: 'Completo Italiano',
+                persuasive: 'Cremosa palta natural procesada diariamente para garantizar una textura inigualable.',
+                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate fresco', 'Palta natural', 'Mayonesa casera'],
+                price: 1600,
+                image: 'https://img.freepik.com/foto-gratis/perro-caliente-italiano-clasico-primer-plano_23-2148210357.jpg?auto=format&w=600&q=80'
+            },
+            {
+                id: 3,
+                name: 'Promoción Italiano + Bebida',
+                persuasive: 'La combinación ideal. Un Italiano XL acompañado de una bebida individual helada.',
+                ingredients: ['Pan artesanal', 'Vienesa de primera calidad', 'Tomate fresco', 'Palta natural', 'Mayonesa casera', 'Bebida individual (350ml)'],
+                price: 2000,
+                image: 'https://images.unsplash.com/photo-1623231307228-440268800995?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 4,
+                name: 'Papas Fritas',
+                persuasive: 'Papas seleccionadas y fritas en su punto óptimo. Crujientes por fuera, tiernas por dentro.',
+                ingredients: ['Papas de origen nacional', 'Sal de mar', 'Aceite vegetal purificado'],
+                price: 1500,
+                image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        let cart = [];
+        let currentDetailQty = 1;
+        let activeProductIndex = 0;
+        let removedIngredientsMap = {};
+        const phone = "56944222079";
+
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = products.map((product, index) => `
+                <div onclick="openProductDetails(${index})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex transform transition-all active:scale-[0.97] cursor-pointer hover:shadow-md">
+                    <div class="w-1/3 h-28 relative shrink-0">
+                        <img src="${product.image}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                    <div class="w-2/3 p-4 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800 leading-tight mb-1 text-sm">${product.name}</h4>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Especialidad de la casa</p>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between">
+                            <span class="font-heading font-bold text-lg text-brand-dark">$${product.price.toLocaleString('es-CL')}</span>
+                            <div class="bg-brand-red/10 text-brand-red p-2 rounded-lg"><i data-lucide="plus" class="w-4 h-4"></i></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openProductDetails(index) {
+            activeProductIndex = index;
+            currentDetailQty = 1;
+            document.getElementById('detail-qty').textContent = currentDetailQty;
+            
+            renderSlider();
+            
+            document.getElementById('product-overlay').classList.add('active');
+            document.getElementById('product-modal').classList.add('active');
+
+            const slider = document.getElementById('product-slider');
+            const targetSlide = document.getElementById(`slide-${index}`);
+            slider.scrollLeft = targetSlide.offsetLeft;
+            
+            updateNavigationIndicators();
+            lucide.createIcons();
+        }
+
+        function renderSlider() {
+            const slider = document.getElementById('product-slider');
+            slider.innerHTML = products.map((product, idx) => {
+                const removed = removedIngredientsMap[product.id] || [];
+                return `
+                <div id="slide-${idx}" class="product-slide flex flex-col h-full overflow-y-auto custom-scroll">
+                    <div class="relative h-64 w-full shrink-0">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+                    </div>
+
+                    <div class="px-6 py-4 pb-12">
+                        <div class="flex justify-between items-start mb-4">
+                            <h2 class="font-heading font-bold text-2xl text-gray-800 pr-4">${product.name}</h2>
+                            <span class="font-heading font-bold text-2xl text-brand-red shrink-0">$${product.price.toLocaleString('es-CL')}</span>
+                        </div>
+
+                        <p class="text-gray-500 leading-relaxed text-sm italic mb-8">${product.persuasive}</p>
+
+                        <div class="mb-6">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i data-lucide="list-checks" class="w-4 h-4 text-gray-400"></i>
+                                <h4 class="text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400">Personalizar ingredientes</h4>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                ${product.ingredients.map(ing => {
+                                    const iconType = ingredientIcons[ing] || 'check-circle';
+                                    const isRemoved = removed.includes(ing);
+                                    
+                                    let iconHtml = '';
+                                    if (iconType === 'tomato-custom') {
+                                        iconHtml = tomatoIconSvg;
+                                    } else if (iconType === 'sausage-custom') {
+                                        iconHtml = sausageIconSvg;
+                                    } else if (iconType === 'avocado-custom') {
+                                        iconHtml = avocadoIconSvg;
+                                    } else if (iconType === 'fries-custom') {
+                                        iconHtml = friesIconSvg;
+                                    } else {
+                                        iconHtml = `<i data-lucide="${isRemoved ? 'x-circle' : iconType}" class="w-3.5 h-3.5 ${isRemoved ? 'text-brand-red' : 'opacity-60'}"></i>`;
+                                    }
+
+                                    return `
+                                    <button onclick="toggleIngredient(${product.id}, '${ing}')" class="ing-chip px-3 py-1.5 bg-white rounded-lg text-[11px] font-bold border ${isRemoved ? 'removed' : 'border-gray-100 shadow-sm'} flex items-center gap-2 text-gray-700">
+                                        <div class="${isRemoved ? 'text-brand-red' : 'text-brand-red/80'} flex items-center justify-center">
+                                            ${iconHtml}
+                                        </div>
+                                        ${ing}
+                                    </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function toggleIngredient(productId, ing) {
+            if (!removedIngredientsMap[productId]) removedIngredientsMap[productId] = [];
+            
+            const list = removedIngredientsMap[productId];
+            if (list.includes(ing)) {
+                removedIngredientsMap[productId] = list.filter(i => i !== ing);
+            } else {
+                removedIngredientsMap[productId].push(ing);
+            }
+            renderSlider();
+            const slider = document.getElementById('product-slider');
+            slider.scrollLeft = document.getElementById(`slide-${activeProductIndex}`).offsetLeft;
+        }
+
+        function updateNavigationIndicators() {
+            const prev = document.getElementById('prev-btn');
+            const next = document.getElementById('next-btn');
+            
+            if (activeProductIndex > 0) {
+                prev.classList.add('visible');
+            } else {
+                prev.classList.remove('visible');
+            }
+            
+            if (activeProductIndex < products.length - 1) {
+                next.classList.add('visible');
+            } else {
+                next.classList.remove('visible');
+            }
+        }
+
+        function navigateSlider(direction) {
+            const nextIndex = activeProductIndex + direction;
+            if (nextIndex >= 0 && nextIndex < products.length) {
+                const slider = document.getElementById('product-slider');
+                slider.scrollLeft = document.getElementById(`slide-${nextIndex}`).offsetLeft;
+            }
+        }
+
+        document.getElementById('product-slider').addEventListener('scroll', (e) => {
+            const slider = e.target;
+            const index = Math.round(slider.scrollLeft / slider.offsetWidth);
+            if (index !== activeProductIndex) {
+                activeProductIndex = index;
+                updateNavigationIndicators();
+            }
+        });
+
+        function closeProductDetails() {
+            document.getElementById('product-overlay').classList.remove('active');
+            document.getElementById('product-modal').classList.remove('active');
+        }
+
+        function updateDetailQty(change) {
+            currentDetailQty = Math.max(1, currentDetailQty + change);
+            document.getElementById('detail-qty').textContent = currentDetailQty;
+        }
+
+        document.getElementById('add-to-cart-btn').onclick = () => {
+            const activeProduct = products[activeProductIndex];
+            const removed = removedIngredientsMap[activeProduct.id] || [];
+            
+            const item = {
+                ...activeProduct,
+                quantity: currentDetailQty,
+                uniqueId: Date.now(),
+                removed: [...removed]
+            };
+            
+            cart.push(item);
+            updateCartUI();
+            closeProductDetails();
+            showToast(`"${activeProduct.name}" añadido al pedido.`);
+        };
+
+        function updateQuantity(uniqueId, change) {
+            const idx = cart.findIndex(item => item.uniqueId === uniqueId);
+            if (idx > -1) {
+                cart[idx].quantity += change;
+                if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const items = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            const floatTotal = document.getElementById('floating-total');
+            const badge = document.getElementById('cart-badge');
+            const floatBtn = document.getElementById('floating-cart-btn');
+
+            let total = 0, count = 0;
+            if (cart.length === 0) {
+                items.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm italic">Su carrito se encuentra vacío.</div>`;
+                badge.classList.replace('scale-100', 'scale-0');
+                floatBtn.classList.add('hidden');
+            } else {
+                items.innerHTML = cart.map(item => {
+                    total += item.price * item.quantity;
+                    count += item.quantity;
+                    
+                    const mods = item.removed.length > 0 ? `<span class="text-red-500 text-[10px] font-medium leading-tight mt-1 opacity-70">Sin: ${item.removed.join(', ')}</span>` : '';
+
+                    return `
+                        <div class="flex flex-col py-4 border-b border-gray-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <h5 class="text-sm font-bold text-gray-800">${item.name}</h5>
+                                    ${mods}
+                                </div>
+                                <div class="flex items-center gap-2 bg-gray-100 rounded-xl p-1 border border-gray-200">
+                                    <button onclick="updateQuantity(${item.uniqueId}, -1)" class="w-8 h-8 bg-white rounded-lg shadow-sm text-gray-600">-</button>
+                                    <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.uniqueId}, 1)" class="w-8 h-8 bg-white rounded-lg shadow-sm text-gray-600">+</button>
+                                </div>
+                            </div>
+                            <span class="text-xs text-brand-red font-bold">$${(item.price * item.quantity).toLocaleString('es-CL')}</span>
+                        </div>`;
+                }).join('');
+                badge.textContent = count;
+                badge.classList.replace('scale-0', 'scale-100');
+                floatBtn.classList.remove('hidden');
+            }
+            const fmt = `$${total.toLocaleString('es-CL')}`;
+            totalEl.textContent = fmt;
+            floatTotal.textContent = fmt;
+            lucide.createIcons();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-overlay').classList.toggle('active');
+            document.getElementById('cart-modal').classList.toggle('active');
+        }
+
+        function checkout() {
+            const address = document.getElementById('address-input').value.trim();
+            if (!address) { showToast("Por favor, ingrese una dirección de entrega.", "error"); return; }
+            
+            let text = `🌭 *NUEVO PEDIDO - DONDE JAVIER* 🌭\n\n`;
+            let total = 0;
+            
+            cart.forEach(item => {
+                text += `▪ *${item.quantity}x ${item.name}*\n`;
+                if (item.removed.length > 0) text += `   ❌ SIN: ${item.removed.join(', ')}\n`;
+                text += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CL')}\n\n`;
+                total += item.price * item.quantity;
+            });
+            
+            text += `💰 *Total del Pedido:* $${total.toLocaleString('es-CL')}\n📍 *Dirección:* ${address}\n\n_Por favor confirmar pedido._`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `${type === "success" ? "bg-brand-dark" : "bg-red-500"} text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-medium toast pointer-events-auto`;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        renderMenu();
+    </script>
+</body>
+</html>
